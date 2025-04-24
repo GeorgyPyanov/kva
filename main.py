@@ -16,7 +16,7 @@ from telegram.ext import (
 
 # ====== Настройки ======
 ADMIN_USERNAME = "m0onstoun"
-QUEST_DURATION = 100 * 60
+QUEST_DURATION = 90 * 60
 PERSISTENCE_FILE = 'bot_data.pkl'
 
 # ====== Логирование ======
@@ -158,7 +158,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_text("Квест запущен. Таймер 1 ч 40 мин.")
             # Уведомление всем участникам
             for team, info in st["teams"].items():
-                await announce(team, "Квест начался! Удачи!", context.application)
+                await announce(team, "Найдите коды и пришлите в бот в формате 6-значного числа. У вас есть ровно 1 "
+                                     "час 30 минут. Время пошло.", context.application)
     elif data == "end_quest" and is_admin(user):
         if st["quest_running"]:
             await end_quest(context)
@@ -261,7 +262,7 @@ async def bonus(update: Update, context: ContextTypes.DEFAULT_TYPE):
     monitor = st["monitors"].setdefault(username, {})
     given = monitor.get(team, 0)
     if given + pts > 5:
-        return await update.message.reply_text("Лимит 5 баллов на команду.")
+        return await update.message.reply_text("Предел 5 баллов на команду.")
     st["teams"][team]["score"] += pts
     monitor[team] = given + pts
     await update.message.reply_text(f"Бонус +{pts} к «{team}». Всего от вас: {monitor[team]}")
@@ -297,7 +298,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if user in info["members"]:
             used = st["used_words"].setdefault(team, set())
             if text in used:
-                await update.message.reply_text("Это слово уже использовано вашей командой.")
+                await update.message.reply_text("Этот код уже открыт вашей командой.")
                 return
             info["score"] += pts
             used.add(text)
