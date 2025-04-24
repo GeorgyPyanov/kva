@@ -213,7 +213,6 @@ async def del_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text(f"Слово {word} не найдено")
 
-
 async def add_team(update: Update, context: ContextTypes.DEFAULT_TYPE):
     st = get_state(context)
     if not is_admin(update.effective_user): return
